@@ -1,26 +1,55 @@
 const username = "avishyant2011"
 const repo = "portfolio"
 
-const api = `https://api.github.com/repos/${username}/${repo}/contents/gallery`
+const galleryContainer = document.getElementById("gallery")
 
-fetch(api)
+const galleryAPI = `https://api.github.com/repos/${username}/${repo}/contents/gallery`
+
+fetch(galleryAPI)
 .then(res => res.json())
-.then(data => {
+.then(folders => {
 
-const gallery = document.getElementById("gallery")
+folders.forEach(folder => {
 
- data.forEach(file => {
+if(folder.type === "dir")
+{
 
- if(file.type === "file")
- {
+const section = document.createElement("div")
 
- const img = document.createElement("img")
- img.src = file.download_url
+const title = document.createElement("h2")
+title.textContent = folder.name
 
- gallery.appendChild(img)
+section.appendChild(title)
 
- }
+const grid = document.createElement("div")
+grid.className = "grid"
 
- })
+section.appendChild(grid)
+
+galleryContainer.appendChild(section)
+
+fetch(folder.url)
+.then(res => res.json())
+.then(images => {
+
+images.forEach(file => {
+
+if(file.type === "file")
+{
+
+const img = document.createElement("img")
+img.src = file.download_url
+
+grid.appendChild(img)
+
+}
+
+})
+
+})
+
+}
+
+})
 
 })
