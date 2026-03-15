@@ -1,11 +1,12 @@
 const username = "avishyant2011"
 const repo = "portfolio"
 
-const galleryContainer = document.getElementById("gallery")
+const sectionContainer = document.getElementById("sections")
+const imageViewer = document.getElementById("imageViewer")
 
-const galleryAPI = `https://api.github.com/repos/${username}/${repo}/contents/gallery`
+const api = `https://api.github.com/repos/${username}/${repo}/contents/gallery`
 
-fetch(galleryAPI)
+fetch(api)
 .then(res => res.json())
 .then(folders => {
 
@@ -14,25 +15,19 @@ folders.forEach(folder => {
 if(folder.type === "dir")
 {
 
-const section = document.createElement("div")
+const button = document.createElement("div")
+button.className = "section-btn"
+button.textContent = folder.name
 
-const title = document.createElement("h2")
-title.textContent = folder.name
+button.onclick = () => {
 
-section.appendChild(title)
-
-const grid = document.createElement("div")
-grid.className = "grid"
-
-section.appendChild(grid)
-
-galleryContainer.appendChild(section)
+imageViewer.innerHTML = ""
 
 fetch(folder.url)
 .then(res => res.json())
-.then(images => {
+.then(files => {
 
-images.forEach(file => {
+files.forEach(file => {
 
 if(file.type === "file")
 {
@@ -40,13 +35,17 @@ if(file.type === "file")
 const img = document.createElement("img")
 img.src = file.download_url
 
-grid.appendChild(img)
+imageViewer.appendChild(img)
 
 }
 
 })
 
 })
+
+}
+
+sectionContainer.appendChild(button)
 
 }
 
